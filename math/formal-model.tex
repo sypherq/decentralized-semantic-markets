@@ -1,0 +1,205 @@
+% ============================================================================
+% Decentralized Semantic Markets — Formal Mechanism Design
+% Author: Sypher | 2026
+% ============================================================================
+
+\documentclass[11pt]{article}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+
+\newtheorem{definition}{Definition}
+\newtheorem{proposition}{Proposition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+
+\title{Formal Mechanism Design for Decentralized Semantic Markets}
+\author{Sypher}
+\date{2026}
+
+\begin{document}
+\maketitle
+
+% ────────────────────────────────────────────────────────────────────────────
+\section{Game Definition}
+
+\begin{definition}[DSM Game]
+A Decentralized Semantic Market is a tuple $\Gamma = (N, S, u, T, \tau)$ where:
+\begin{itemize}[nosep]
+  \item $N = \{1, 2, \dots, n\}$ is the set of \textbf{players} (participants).
+  \item $S = S^D \times S^V$ is the \textbf{strategy space}, decomposed into:
+    \begin{itemize}[nosep]
+      \item $S^D_i = \{d_i \in \mathcal{D} \cup \{\emptyset\}\}$ — player $i$ may submit a definition $d_i$ for a term or abstain.
+      \item $S^V_i = \{\mathbf{v}_i \in \mathbb{R}^{|\mathcal{D}|}_{\geq 0} : \|\mathbf{v}_i\|_1 \leq \text{VP}_i\}$ — an allocation of voting points across definitions.
+    \end{itemize}
+  \item $u_i : S \to \mathbb{R}$ is the \textbf{payoff function} for player $i$.
+  \item $T \in \mathbb{R}_{>0}$ is the \textbf{voting window duration}.
+  \item $\tau \in [0, T]$ is the current time within the window.
+\end{itemize}
+\end{definition}
+
+% ────────────────────────────────────────────────────────────────────────────
+\section{Payoff Functions}
+
+Let $d^*$ denote the \textbf{winning definition} — the definition receiving the greatest total weighted vote at $\tau = T$.
+
+\subsection{Author Payoff}
+
+For a player $i$ who submits definition $d_i$ at time $\tau_i$:
+
+\begin{equation}
+u_i^{\text{author}} =
+\begin{cases}
+  R_0 \cdot e^{-k \tau_i} + \Delta\text{DP}_i & \text{if } d_i = d^* \\[6pt]
+  -C_{\text{stake}} - \delta \cdot \text{Rep}_i & \text{if } d_i \neq d^*
+\end{cases}
+\end{equation}
+
+where:
+\begin{itemize}[nosep]
+  \item $R_0$ is the base reward for the term.
+  \item $k > 0$ is the temporal decay constant.
+  \item $\Delta\text{DP}_i$ is the definition points awarded.
+  \item $C_{\text{stake}}$ is the VP staked to submit.
+  \item $\delta \in [0, 1]$ is the reputation penalty coefficient.
+\end{itemize}
+
+\subsection{Voter Payoff}
+
+For a player $i$ who allocates $v_{i,j}$ voting points to definition $d_j$:
+
+\begin{equation}
+u_i^{\text{voter}} = \sum_{j} v_{i,j} \cdot
+\begin{cases}
+  \alpha \cdot \log(1 + \text{Rep}_i) & \text{if } d_j = d^* \\[4pt]
+  -\beta & \text{if } d_j \neq d^*
+\end{cases}
+\end{equation}
+
+where $\alpha > 0$ is the accuracy reward multiplier and $\beta > 0$ is the per-unit loss for incorrect votes.
+
+\subsection{Combined Payoff}
+
+\begin{equation}
+u_i = u_i^{\text{author}} + u_i^{\text{voter}}
+\end{equation}
+
+% ────────────────────────────────────────────────────────────────────────────
+\section{Nash Equilibrium Derivation}
+
+\begin{proposition}[Dominant Strategy]
+Under the DSM mechanism, the strategy profile $s^* = (s_1^*, \dots, s_n^*)$ where each player $i$:
+\begin{enumerate}[nosep]
+  \item Submits a \textbf{truthful, high-quality definition} $d_i^*$ if their private signal indicates they can improve on existing entries.
+  \item Allocates all VP to the definition $d_j$ that maximizes $\Pr(d_j = d^*)$.
+\end{enumerate}
+constitutes a Nash equilibrium.
+\end{proposition}
+
+\begin{proof}
+Consider unilateral deviations:
+
+\textbf{Case 1: Deviation to spam submission.}
+If player $i$ submits a low-quality definition $\hat{d}_i$, then $\Pr(\hat{d}_i = d^*)$ is low by the reputation-weighted voting mechanism. The expected payoff becomes:
+
+\begin{equation}
+\mathbb{E}[u_i^{\text{spam}}] = \Pr(\hat{d}_i = d^*) \cdot R_0 e^{-k\tau_i} - (1 - \Pr(\hat{d}_i = d^*)) \cdot (C_{\text{stake}} + \delta \cdot \text{Rep}_i)
+\end{equation}
+
+Since $\Pr(\hat{d}_i = d^*) \ll 1$ and $C_{\text{stake}} + \delta \cdot \text{Rep}_i > 0$, we have $\mathbb{E}[u_i^{\text{spam}}] < 0$.
+
+\textbf{Case 2: Deviation to dishonest voting.}
+If player $i$ votes for a definition $d_j$ they believe will \emph{not} win, then $\Pr(d_j = d^*) < 0.5$ by assumption. The expected voter payoff:
+
+\begin{equation}
+\mathbb{E}[u_i^{\text{dishonest}}] = v_i \left[\Pr(d_j = d^*) \cdot \alpha \log(1 + \text{Rep}_i) - (1 - \Pr(d_j = d^*)) \cdot \beta \right] < \mathbb{E}[u_i^{\text{honest}}]
+\end{equation}
+
+since $\Pr(d_j = d^*) < \Pr(d_j^* = d^*)$ where $d_j^*$ is the definition the player truthfully believes will win.
+
+No unilateral deviation improves expected payoff. $\qed$
+\end{proof}
+
+% ────────────────────────────────────────────────────────────────────────────
+\section{Expected Payoff Equations by Strategy}
+
+\subsection{Early Definition ($\tau_i \to 0$)}
+
+\begin{equation}
+\mathbb{E}[u_i^{\text{early}}] = p_e \cdot R_0 - (1 - p_e)(C_{\text{stake}} + \delta \cdot \text{Rep}_i)
+\end{equation}
+
+where $p_e = \Pr(d_i = d^* \mid \tau_i \approx 0)$. Early entrants face high uncertainty ($p_e$ moderate) but maximum reward ($e^{-k\tau_i} \approx 1$).
+
+\subsection{Late Definition ($\tau_i \to T$)}
+
+\begin{equation}
+\mathbb{E}[u_i^{\text{late}}] = p_l \cdot R_0 \cdot e^{-kT} - (1 - p_l)(C_{\text{stake}} + \delta \cdot \text{Rep}_i)
+\end{equation}
+
+where $p_l > p_e$ (more information available) but $e^{-kT} \ll 1$. The product $p_l \cdot e^{-kT}$ is designed such that $\mathbb{E}[u_i^{\text{early}}] > \mathbb{E}[u_i^{\text{late}}]$ for reasonable $k$.
+
+\subsection{Spam Submission}
+
+\begin{equation}
+\mathbb{E}[u_i^{\text{spam}}] = p_s \cdot R_0 e^{-k\tau_i} - (1 - p_s)(C_{\text{stake}} + \delta \cdot \text{Rep}_i) - \gamma \cdot \text{Rep}_i
+\end{equation}
+
+where $p_s \approx 0$ and $\gamma > 0$ is an additional reputation penalty for detected spam. This yields $\mathbb{E}[u_i^{\text{spam}}] < 0$ for all $\tau_i$.
+
+% ────────────────────────────────────────────────────────────────────────────
+\section{Voting Equilibrium Analysis}
+
+Define the \textbf{weighted vote total} for definition $d_j$:
+
+\begin{equation}
+W_j = \sum_{i \in N} v_{i,j} \cdot \log(1 + \text{Rep}_i)
+\end{equation}
+
+The winning definition is:
+
+\begin{equation}
+d^* = \arg\max_{j} \; W_j
+\end{equation}
+
+\begin{proposition}[Focal Point Convergence]
+In the unique Nash equilibrium of the voting subgame, all rational voters coordinate on the definition with the highest perceived quality $q_j$, creating a Schelling focal point.
+\end{proposition}
+
+This follows from the payoff structure: voters earn positive returns only for voting on the eventual winner. Self-fulfilling expectations drive convergence to a single focal definition.
+
+% ────────────────────────────────────────────────────────────────────────────
+\section{Anti-Collusion Cost Modeling}
+
+\begin{definition}[Collusion Group]
+A collusion group $\mathcal{C} \subset N$ coordinates to vote for a suboptimal definition $d_c$ where $q_c < q^*$.
+\end{definition}
+
+\subsection{Cost of Collusion}
+
+The total cost to the collusion group scales superlinearly:
+
+\begin{equation}
+\text{Cost}(\mathcal{C}) = \sum_{i \in \mathcal{C}} a \cdot \text{VP}_i^b + \sum_{i \in \mathcal{C}} (1 - \pi_c) \cdot \beta \cdot \text{VP}_i
+\end{equation}
+
+where:
+\begin{itemize}[nosep]
+  \item $a \cdot \text{VP}_i^b$ with $b > 1$ is the convex acquisition cost per colluder.
+  \item $\pi_c = \Pr(d_c = d^*)$ is the probability the collusive definition wins.
+  \item $(1 - \pi_c) \cdot \beta \cdot \text{VP}_i$ is the expected VP loss from backing the loser.
+\end{itemize}
+
+\begin{theorem}[Collusion Threshold]
+Collusion is unprofitable when:
+\begin{equation}
+\sum_{i \in \mathcal{C}} a \cdot \text{VP}_i^b > \pi_c \cdot R_0 \cdot e^{-k\bar{\tau}}
+\end{equation}
+where $\bar{\tau}$ is the average submission time of the collusion group. Since VP cost grows convexly while rewards decay exponentially, there exists a finite group size $|\mathcal{C}|^*$ beyond which collusion is strictly dominated.
+\end{theorem}
+
+\begin{corollary}
+For sufficiently large $b$ (superlinear VP cost exponent), coordinated manipulation is economically infeasible for any group size $|\mathcal{C}| > |\mathcal{C}|^*$.
+\end{corollary}
+
+\end{document}
