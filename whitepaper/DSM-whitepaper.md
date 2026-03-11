@@ -2,7 +2,9 @@
 
 ### A Market Mechanism for Incentivized Discovery of Language
 
-**Author:** Sypher
+This work introduces the concept of Decentralized Semantic Markets.
+
+**Original Author:** Sypher
 **Date:** 2026
 
 ---

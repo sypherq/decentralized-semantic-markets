@@ -1,134 +1,218 @@
-# Decentralized Semantic Markets (DSM)
+Decentralized Semantic Markets (DSM)
 
-**A market where the traded asset is meaning itself.**
+A market where the traded asset is meaning itself.
 
----
+Decentralized Semantic Markets propose a new mechanism for discovering, curating, and validating the meaning of language using economic incentives and game-theoretic coordination.
 
-## What is DSM?
+Instead of centralized editorial committees deciding definitions, interpretations compete in an open market, where participants stake voting power on the definitions they believe will become consensus.
 
-Language evolves faster than any dictionary can keep up. New terms emerge daily across internet culture, finance, gaming, and technology — yet the systems we use to define them are slow, centralized, and fragile.
+The result is a continuously evolving semantic layer for the internet.
 
-**Decentralized Semantic Markets** introduce a market-based mechanism for discovering, curating, and validating the meaning of language. Participants compete to define terms, vote on interpretations, and earn reputation through accurate curation — all governed by game-theoretic incentives that make honest participation the dominant strategy.
+⸻
 
-> Instead of editorial committees deciding meaning, **definitions compete in a marketplace** where collective intelligence determines semantic consensus.
+The Problem
 
----
+Language evolves faster than any traditional dictionary can track.
 
-## How It Works
+New terminology emerges daily across:
+	•	internet culture
+	•	finance
+	•	technology
+	•	gaming
+	•	AI research
 
-```
-   Submit Term          Submit Definitions         Vote (VP)
-   ──────────►  [ Term ]  ──────────►  [ Defs ]  ──────────►  [ Market ]
-                                                                   │
-                                          ┌────────────────────────┘
-                                          ▼
-                                    [ Consensus ]
-                                     │         │
-                              DP Reward    Rep Feedback
-                              to Author    to Voters
-```
+Existing systems struggle because they are:
+	•	centralized
+	•	slow to update
+	•	vulnerable to spam
+	•	poorly incentivized
 
-1. **Discover** — Identify emerging terminology and create new terms (requires VP stake).
-2. **Define** — Submit competing definitions for a term.
-3. **Curate** — Allocate Voting Points (VP) to the definition you believe will win.
-4. **Earn** — Winners receive Definition Points (DP) and reputation that amplifies future influence.
+Crowdsourced dictionaries improve coverage but still lack mechanisms that reward accuracy, early discovery, and honest curation.
 
-Early discovery is rewarded exponentially. Spam is penalized. Collusion is economically infeasible.
+⸻
 
----
+The DSM Approach
 
-## Key Properties
+Decentralized Semantic Markets introduce economic incentives into semantic discovery.
 
-| Property | Mechanism |
-|----------|-----------|
-| **Sybil Resistance** | Convex VP cost curves (`Cost = a × VP^b`, `b > 1`) |
-| **Quality Incentives** | Temporal reward decay (`R(t) = R₀ × e^(−kt)`) rewards early, accurate submissions |
-| **Anti-Collusion** | Superlinear coordination costs exceed potential collusive gains |
-| **Meritocratic Influence** | Reputation-weighted voting (`VP × log(1 + Rep)`) with diminishing returns |
-| **Nash Equilibrium** | Dominant strategy: submit high-quality definitions early, vote honestly |
+Participants compete to:
+	1.	Discover emerging terms
+	2.	Define interpretations of those terms
+	3.	Curate competing definitions through voting
+	4.	Earn reputation for accurate contributions
 
----
+Meaning emerges through market consensus rather than editorial authority.
 
-## Repository Structure
+⸻
 
-```
+How It Works
+
+Submit Term      Submit Definitions        Vote (VP)
+──────────►  [ Term ]  ──────────►  [ Definitions ] ──────────► [ Market ]
+                                                                │
+                                           ┌────────────────────┘
+                                           ▼
+                                     [ Consensus ]
+                                      │         │
+                               DP Reward    Rep Feedback
+                               to Author    to Voters
+
+Step 1 — Discover
+
+Users identify emerging terminology and create new terms (requires a VP stake).
+
+Step 2 — Define
+
+Participants submit competing definitions for that term.
+
+Step 3 — Curate
+
+Users allocate Voting Points (VP) to the definition they believe will win consensus.
+
+Step 4 — Earn
+
+Winning definitions receive Definition Points (DP) and reputation that amplifies future influence.
+
+⸻
+
+Core Design Principles
+
+Principle	Mechanism
+Sybil Resistance	Convex VP cost curves (Cost = a × VP^b, b > 1)
+Early Discovery Incentives	Temporal reward decay (R(t) = R₀ × e^(−kt))
+Meritocratic Influence	Reputation-weighted voting (VP × log(1 + Rep))
+Anti-Collusion	Superlinear coordination costs exceed potential rewards
+Incentive Compatibility	Honest voting maximizes expected payoff
+
+
+⸻
+
+Core Equations
+
+Reward Decay
+
+R(t) = R₀ × e^(−kt)
+
+Vote Weight
+
+VoteWeight(i) = VP(i) × log(1 + Rep(i))
+
+VP Cost Curve
+
+Cost(VP) = a × VP^b
+
+Collusion Threshold
+
+Σ [a × VP^b]  >  π_c × R₀ × e^(−kτ̄)
+
+
+⸻
+
+Diagrams
+
+	
+	
+Token Flow Architecture	Temporal Incentive Curve
+	
+Game-Theoretic Payoff Matrix	
+
+
+⸻
+
+Repository Structure
+
 decentralized-semantic-markets/
 ├── whitepaper/
-│   └── DSM-whitepaper.md          # Full whitepaper
+│   └── DSM-whitepaper.md
+│
 ├── math/
-│   └── formal-model.tex           # LaTeX: game definition, Nash equilibrium proofs,
-│                                  #   payoff functions, anti-collusion cost modeling
+│   └── formal-model.tex
+│
 ├── tokenomics/
-│   └── vp-dp-model.md             # VP/DP issuance, cost curves, reputation model,
-│                                  #   collusion thresholds with parameter tables
+│   └── vp-dp-model.md
+│
 ├── diagrams/
-│   ├── token-flow.png             # System architecture & token flow diagram
-│   ├── temporal-reward-decay.png  # Incentive curve visualization
-│   ├── payoff-matrix.png          # Game-theoretic payoff matrix
-│   └── diagrams.jsx               # React source for diagram generation
+│   ├── token-flow.png
+│   ├── temporal-reward-decay.png
+│   ├── payoff-matrix.png
+│
 └── README.md
-```
 
----
 
-## Use Cases
+⸻
 
-- **Internet Slang Dictionary** — A living dictionary for online culture, incentive-driven instead of editorially curated.
-- **AI Training Data** — Consensus-validated definitions for LLM training pipelines that stay current with evolving language.
-- **Cultural Trend Detection** — Early term creation signals as leading indicators for emerging trends.
-- **Semantic Knowledge Graphs** — Decentralized ontology layer for AI systems and search engines.
+Potential Applications
 
----
+Internet Slang Dictionary
 
-## Core Equations
+A continuously evolving dictionary for online culture.
 
-**Reward Decay** — early contributors earn exponentially more:
-```
-R(t) = R₀ × e^(−kt)
-```
+AI Training Data
 
-**Vote Weight** — reputation amplifies influence with diminishing returns:
-```
-VoteWeight(i) = VP(i) × log(1 + Rep(i))
-```
+Consensus-validated semantic datasets for language models.
 
-**VP Cost Curve** — prevents concentration of power:
-```
-Cost(VP) = a × VP^b       (b > 1)
-```
+Cultural Trend Detection
 
-**Collusion Threshold** — collusion is unprofitable when:
-```
-Σ [a × VP^b]  >  π_c × R₀ × e^(−kτ̄)
-```
+New term creation signals emerging cultural and technological shifts.
 
----
+Decentralized Knowledge Graph
 
-## Diagrams
+A semantic layer for AI agents, search engines, and knowledge systems.
 
-| | |
-|:---:|:---:|
-| ![System Architecture](diagrams/token-flow.png) | ![Reward Decay](diagrams/temporal-reward-decay.png) |
-| *System Architecture & Token Flow* | *Temporal Reward Decay Curve* |
-| ![Payoff Matrix](diagrams/payoff-matrix.png) | |
-| *Game-Theoretic Payoff Matrix* | |
+⸻
 
----
+Research Directions
 
-## Read the Whitepaper
+Open research questions include:
+	•	equilibrium stability of semantic voting markets
+	•	collusion resistance under adversarial voting
+	•	optimal VP pricing curves
+	•	reputation decay mechanisms
+	•	integration with prediction market frameworks
 
-**[Full Whitepaper →](whitepaper/DSM-whitepaper.md)**
+⸻
 
-**[Formal Mechanism Design (LaTeX) →](math/formal-model.tex)**
+Read the Research
+	•	Whitepaper
+whitepaper/DSM-whitepaper.md
+	•	Formal Mechanism Design (LaTeX)
+math/formal-model.tex
+	•	Tokenomics Model
+tokenomics/vp-dp-model.md
 
-**[Tokenomics Model →](tokenomics/vp-dp-model.md)**
+⸻
 
----
+Author
 
-## Author
+Sypher — 2026
 
-**Sypher** — 2026
+⸻
 
----
+Citation
 
-*DSM is a research proposal. This repository contains the whitepaper, formal models, and supporting materials for community review and discussion.*
+@misc{sypher2026dsm,
+  title={Decentralized Semantic Markets: A Market Mechanism for Incentivized Discovery of Language},
+  author={Sypher},
+  year={2026},
+  url={https://github.com/sypherq/decentralized-semantic-markets}
+}
+
+
+⸻
+
+Contributing
+
+This repository contains an early-stage research proposal.
+
+Contributions welcome:
+	•	mechanism design analysis
+	•	tokenomics modeling
+	•	game-theoretic proofs
+	•	simulation frameworks
+	•	implementation prototypes
+
+Open an issue or submit a pull request.
+
+⸻
+
+DSM is a research proposal exploring market-based mechanisms for semantic discovery.
